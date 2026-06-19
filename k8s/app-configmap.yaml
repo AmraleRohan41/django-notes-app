@@ -6,5 +6,5 @@ metadata:
 
 data:
   DB_NAME: test_db
-  DB_HOST: db-service
+  DB_HOST: mysql-service
   DB_PORT: "3306"
