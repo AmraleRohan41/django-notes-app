@@ -3,13 +3,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/AmraleRohan41/django-notes-app.git'
-            }
-        }
-
         stage('Verify Repository') {
             steps {
                 sh '''
