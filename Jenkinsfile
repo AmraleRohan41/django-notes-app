@@ -3,27 +3,25 @@ pipeline {
 
     stages {
 
-        stage('Verify Repository') {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/AmraleRohan41/django-notes-app.git'
+            }
+        }
+
+        stage('Build Docker Image') {
             steps {
                 sh '''
-                pwd
-                ls -la
+                docker build -t notes-app:latest .
                 '''
             }
         }
 
-        stage('Verify Kubernetes Files') {
+        stage('Verify Image') {
             steps {
                 sh '''
-                ls -la k8s
-                '''
-            }
-        }
-
-        stage('Verify Dockerfile') {
-            steps {
-                sh '''
-                cat Dockerfile
+                docker images | grep notes-app
                 '''
             }
         }
