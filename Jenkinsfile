@@ -2,11 +2,17 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_USERNAME = "amralerohan41"
-        IMAGE_NAME = "notes-app"
+        IMAGE_NAME = "amralerohan41/notes-app"
     }
 
     stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/AmraleRohan41/django-notes-app.git'
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
@@ -16,45 +22,23 @@ pipeline {
             }
         }
 
-        stage('Docker Login') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    sh '''
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                    '''
-                }
-            }
-        }
-
-        stage('Tag Image') {
+        stage('Verify Image') {
             steps {
                 sh '''
-                docker tag $IMAGE_NAME:latest $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
+                docker images | grep notes-app
                 '''
             }
         }
 
-        stage('Push Image') {
-            steps {
-                sh '''
-                docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
-                '''
-            }
-        }
         stage('Deploy Container') {
             steps {
                 sh '''
-                docker stop notes-app || true
-                docker rm notes-app || true
+                docker rm -f notes-app || true
 
                 docker run -d \
-                --name notes-app \
-                -p 8000:8000 \
-                amralerohan41/notes-app:latest
+                  --name notes-app \
+                  -p 8000:8000 \
+                  $IMAGE_NAME:latest
                 '''
             }
         }
