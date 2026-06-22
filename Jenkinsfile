@@ -36,9 +36,15 @@ pipeline {
                 docker rm -f notes-app || true
 
                 docker run -d \
-                  --name notes-app \
-                  -p 8001:8000 \
-                  $IMAGE_NAME:latest
+                --name notes-app \
+                --network notes-network \
+                -p 8001:8000 \
+                -e DB_NAME=test_db \
+                -e DB_USER=root \
+                -e DB_PASSWORD=root \
+                -e DB_HOST=db_cont \
+                -e DB_PORT=3306 \
+                amralerohan41/notes-app:latest
                 '''
             }
         }
