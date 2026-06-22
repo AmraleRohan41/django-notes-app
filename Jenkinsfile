@@ -45,5 +45,18 @@ pipeline {
                 '''
             }
         }
+        stage('Deploy Container') {
+            steps {
+                sh '''
+                docker stop notes-app || true
+                docker rm notes-app || true
+
+                docker run -d \
+                --name notes-app \
+                -p 8000:8000 \
+                amralerohan41/notes-app:latest
+                '''
+            }
+        }
     }
 }
