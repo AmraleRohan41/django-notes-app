@@ -45,6 +45,10 @@ pipeline {
                 -e DB_HOST=db_cont \
                 -e DB_PORT=3306 \
                 amralerohan41/notes-app:latest
+
+                sleep 10
+
+                docker exec notes-app python manage.py migrate
                 '''
             }
         }
