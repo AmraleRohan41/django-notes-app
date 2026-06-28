@@ -1,0 +1,15 @@
+groups:
+  - name: demo-alerts
+
+    rules:
+
+      - alert: PrometheusTargetDown
+        expr: up == 0
+        for: 30s
+
+        labels:
+          severity: critical
+
+        annotations:
+          summary: "Target is down"
+          description: "{{ $labels.instance }} has been unreachable for 30 seconds."
